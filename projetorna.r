@@ -4,10 +4,10 @@ library(zoo)
 library(neuralnet)
 
 ######## PRÉ-PROCESSAMENTO DOS DATASETS ########
-breastcancer <- read.csv("~/Documentos/code/redes-neurais/datasets/Breast Cancer Wisconsin Dataset.csv", header=FALSE)
+breastcancer <- read.csv("./datasets/Breast Cancer Wisconsin Dataset.csv", header=FALSE)
 names(breastcancer)<-c('id','clump_thickness','uniformity_of_cell_size','uniformity_of_cell_shape','marginal_adhesion',
                        'epithelial_cell_size','bare_nuclei','bland_chromation','normal_nucleoli','mitoses','class')
-diabetes <- read.csv('~/Documentos/code/redes-neurais/datasets/Pima Indians Diabetes Dataset.csv', header=FALSE)
+diabetes <- read.csv('./datasets/Pima Indians Diabetes Dataset.csv', header=FALSE)
 names(diabetes)<-c('n_pregnant','plasma_concentration','blood_pressure','skin_thickness','insulin','body_mass','diabetes_pedigree',
                    'age','class')
 
