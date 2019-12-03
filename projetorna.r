@@ -10,6 +10,10 @@ names(breastcancer)<-c('id','clump_thickness','uniformity_of_cell_size','uniform
 diabetes <- read.csv('./datasets/Pima Indians Diabetes Dataset.csv', header=FALSE)
 names(diabetes)<-c('n_pregnant','plasma_concentration','blood_pressure','skin_thickness','insulin','body_mass','diabetes_pedigree',
                    'age','class')
+cancer_class<-breastcancer$class #guardanndo as classes possiveis de câncer de mama
+diabetes_class<-diabetes$class #guardando as classes possíveis de diabetes
+breastcancer<-breastcancer[,2:10] #Tirando os Ids e as classes do dataset para poder limpá-lo
+diabetes<-diabetes[,1:8]
 
 #print(summary(breastcancer))
 #print(summary(diabetes))
@@ -25,19 +29,39 @@ diabetes$blood_pressure[diabetes$blood_pressure==0]<-NA
 finaldiabetes <- na.aggregate(diabetes) #Substitui os valores com missings pela média das colunas
 print(sum(is.na(finaldiabetes))) #Debug para ver a quantidade de missings
 
+#Transformando os dados em dataframes
+diabetes_dataframe <- as.data.frame(lapply(finaldiabetes, function(x) as.numeric(x)))
+breast_dataframe <-as.data.frame(lapply(finalbreastcancer, function(x) as.numeric(as.character(x))))
+
+#Normalizando os dados
+#Breast Cancer
+breastc_max<-apply(breast_dataframe,2,max)
+breastc_min<-apply(breast_dataframe,2,min)
+
+scaled_breastcancer<-as.data.frame(scale(breast_dataframe, center=breastc_min, scale=breastc_max - breastc_min))
+print(sum(is.na(scaled_breastcancer))) #Debug para ver a quantidade de missings
+
+#Diabetes
+diabetes_max<-apply(diabetes_dataframe, 2, max)
+diabetes_min<-apply(diabetes_dataframe, 2, min)
+scaled_diabetes<-as.data.frame(scale(diabetes_dataframe, center=diabetes_min, scale=diabetes_max - diabetes_min))
+
 #Dividindo os dois datasets, 75% e 25%. O set.seed() é opcional, apenas para podermos checar o resultado depois
 
 #set.seed(100)
-train_index_breast<-sample(nrow(finalbreastcancer), 0.75*nrow(finalbreastcancer), replace=FALSE)
-breast_trainset<-finalbreastcancer[train_index_breast,]
-breast_testset<-finalbreastcancer[-train_index_breast,]
+train_index_breast<-sample(nrow(scaled_breastcancer), 0.75*nrow(scaled_breastcancer), replace=FALSE)
+breast_trainset<-scaled_breastcancer[train_index_breast,]
+breast_testset<-scaled_breastcancer[-train_index_breast,]
 
 #set.seed(200)
-train_index_diabetes<-sample(nrow(finaldiabetes), 0.75*nrow(finaldiabetes), replace=FALSE)
-diabetes_trainset<-finaldiabetes[train_index_breast,]
-diabetes_testset<-finaldiabetes[-train_index_breast,]
+train_index_diabetes<-sample(nrow(scaled_diabetes), 0.75*nrow(scaled_diabetes), replace=FALSE)
+diabetes_trainset<-scaled_diabetes[train_index_breast,]
+diabetes_testset<-scaled_diabetes[-train_index_breast,]
 
-#Normalizando os dados
+View(diabetes_trainset)
+View(breast_trainset)
+
+
 
 ######## ACHANDO OS PARÂMETROS DO MODELO ########
 
