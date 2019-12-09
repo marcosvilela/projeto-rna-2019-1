@@ -60,6 +60,11 @@ predict_result<-round(predict_net_test$net.result, digits = 0)
 net.prediction = c("benign", "malignant")[apply(predict_result, 1, which.max)]
 predict.table = table(cleanedbreastcancer$Class[-train_index_breast], net.prediction)
 print(predict.table)
+fp<-predict.table[3]
+fn<-predict.table[2]
+vp<-predict.table[1]
+vn<- predict.table[4]
+
 for(i in learnrates){ #Testando 5 vezes para valores de taxa de aprendizado aleatórios entre 0 e 1
   
 }
@@ -67,6 +72,35 @@ for(i in learnrates){ #Testando 5 vezes para valores de taxa de aprendizado alea
 
 
 ####### EXPERIMENTOS PRINCIPAIS (SALVANDO OS RESULTADOS DAS MÉTRICAS (Acurácia e F1 Score) EM CSV) #######
+
+
+accuracy<-function(vp,vn,fp,fn){
+  return((vp+vn)/(vp+vn+fp+fn))
+}
+
+sensitivity<-function(vp, fn){
+  return(vp/(vp+fn))
+}
+
+specificity<-function(vn,fp){
+  return(vn/(vn+fp))
+}
+
+efficiency<-function(sens, spec){
+  return((sens+spec)/2)
+}
+
+precision<-function(vp,fp){
+  return((vp)/(vp+fp))
+}
+
+f1score<-function(sens, ppv){
+  return (2*((sens*ppv)/(sens+ppv)))
+}
+
+phi<-function(vp,fp,vn,fn){
+  return((vp*vn - fp*fn)/sqrt((vp+fp)*(vp+fn)*(vn+fp)*(vn+fn)))
+}
 
 ####### TESTES ESTATÍSTICOS #########
 

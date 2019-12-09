@@ -41,6 +41,7 @@ Diabetes<-with(Diabetes,data.frame(model.matrix(~Diabetes+0)))
 #Normalizando os dados
 diabetes_max<-apply(finaldiabetes, 2, max)
 diabetes_min<-apply(finaldiabetes, 2, min)
+#Possibilidade; Testar mudando o tipo de normalização
 scaled_diabetes<-as.data.frame(scale(finaldiabetes, center=diabetes_min, scale=diabetes_max - diabetes_min))
 View(scaled_diabetes)
 
@@ -66,9 +67,44 @@ predict_net_test <- compute(net,diabetes_testset[,1:8])
 predict_result<-round(predict_net_test$net.result, digits = 0)
 net.prediction = c("neg", "pos")[apply(predict_result, 1, which.max)]
 predict.table = table(diabetes$diabetes[-train_index_diabetes], net.prediction)
-print(predict.table)
+
+fp<-predict.table[3]
+fn<-predict.table[2]
+vp<-predict.table[1]
+vn<- predict.table[4]
 
 ####### EXPERIMENTOS PRINCIPAIS (SALVANDO OS RESULTADOS DAS MÉTRICAS (Acurácia e F1 Score) EM CSV) #######
+#Execuções múltiplas aqui
+
+#Definindo funções para as métricas que iremos utilizar
+
+accuracy<-function(vp,vn,fp,fn){
+  return((vp+vn)/(vp+vn+fp+fn))
+}
+
+sensitivity<-function(vp, fn){
+  return(vp/(vp+fn))
+}
+
+specificity<-function(vn,fp){
+  return(vn/(vn+fp))
+}
+
+efficiency<-function(sens, spec){
+  return((sens+spec)/2)
+}
+
+precision<-function(vp,fp){
+  return((vp)/(vp+fp))
+}
+
+f1score<-function(sens, ppv){
+  return (2*((sens*ppv)/(sens+ppv)))
+}
+
+phi<-function(vp,fp,vn,fn){
+  return((vp*vn - fp*fn)/sqrt((vp+fp)*(vp+fn)*(vn+fp)*(vn+fn)))
+}
 
 ####### TESTES ESTATÍSTICOS #########
 
