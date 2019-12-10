@@ -39,7 +39,7 @@ phi<-function(vp,fp,vn,fn){
 ######## PRÉ-PROCESSAMENTO DO DATASET ########
 data(BreastCancer)
 breastcancer<-BreastCancer
-#View(breastcancer)
+View(breastcancer)
 summary(breastcancer)
 
 #Breast cancer -> Tratar missing substituindo ? pelo valor mais comum (Ou dropar as linhas)
@@ -63,7 +63,7 @@ breastc_min<-apply(breast_dataframe,2,min)
 
 scaled_breastcancer<-as.data.frame(scale(breast_dataframe, center=breastc_min, scale=breastc_max - breastc_min))
 print(sum(is.na(scaled_breastcancer))) #Debug para ver a quantidade de missings
-
+View(scaled_breastcancer)
 final_data<-as.data.frame(cbind(scaled_breastcancer,Cancer))
 #View(final_data)
 
@@ -137,17 +137,6 @@ f <- as.formula(paste("Cancerbenign + Cancermalignant ~ ", paste(n, collapse=' +
 #Com seed=50, 3 neuronios na camada escondida nos dão o melhor resultado
 
 
-#net <- neuralnet(f, data=breast_trainset,hidden = 5,linear.output = FALSE)
-#plot(net)
-#predict_net_test <- compute(net,breast_testset[,1:9])
-#predict_result<-round(predict_net_test$net.result, digits = 0)
-#net.prediction = c("benign", "malignant")[apply(predict_result, 1, which.max)]
-#predict.table = table(cleanedbreastcancer$Class[-train_index_breast], net.prediction)
-#print(predict.table)
-#fp<-predict.table[3]
-#fn<-predict.table[2]
-#vp<-predict.table[1]
-#vn<- predict.table[4]
 
 ####### EXPERIMENTOS PRINCIPAIS (SALVANDO OS RESULTADOS DAS MÉTRICAS (Acurácia e F1 Score) EM UM ARRAY PARA OS TESTES) #######
 accs_final<-c()
