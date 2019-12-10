@@ -60,6 +60,7 @@ print(sum(is.na(diabetes_trainset)))
 ######## ACHANDO OS PARÂMETROS DO MODELO ########
 n<-names(final_data[1:8])
 f<-as.formula(paste("Diabetesneg + Diabetespos ~", paste(n, collapse='+')))
+matrix_cells<-c()
 
 net <- neuralnet(f, data=diabetes_trainset,hidden = 5,linear.output = FALSE)
 plot(net)
